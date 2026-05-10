@@ -1,0 +1,113 @@
+// Example JS function
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Website loaded!");
+  });
+  
+  const counters = document.querySelectorAll('.count');
+  const speed = 200; // lower = faster
+
+  counters.forEach(counter => {
+    const updateCount = () => {
+      const target = +counter.getAttribute('data-target');
+      const count = +counter.innerText;
+      const increment = Math.max(Math.floor(target / speed), 1);
+
+      if (count < target) {
+        counter.innerText = count + increment;
+        setTimeout(updateCount, 20);
+      } else {
+        counter.innerText = target.toLocaleString() + '+'; // adds comma + plus
+      }
+    };
+
+    updateCount();
+  });
+  
+  // Carousel Control Script -->
+
+    function goToSlide(index) {
+      const carousel = bootstrap.Carousel.getOrCreateInstance(document.querySelector('#mediaCarousel'));
+      carousel.to(index);
+  
+      document.querySelectorAll('.thumb').forEach(el => el.classList.remove('active-thumb'));
+      if (index > 0) {
+        document.querySelectorAll('.thumb')[index - 1].classList.add('active-thumb');
+      }
+    }
+
+
+    //New Campaign Page
+
+    let selectedType = null;
+
+    function selectType(type) {
+      selectedType = type;
+      alert("Selected: " + (type === 'ngo' ? "NGO" : "Myself"));
+    }
+  
+    function submitPhone() {
+      const phone = document.getElementById("phone").value;
+      if (!phone.match(/^[6-9]\d{9}$/)) {
+        alert("Please enter a valid 10-digit number.");
+        return;
+      }
+  
+      if (!selectedType) {
+        alert("Please select NGO or Myself first.");
+        return;
+      }
+  
+      alert("OTP Sent Successfully!");
+      window.location.href = selectedType === 'ngo' ? "For-NGO.html" : "For-Myself.html";
+    }
+
+
+    // JavaScript for Toggle // success stories
+
+    document.querySelectorAll('.read-more-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const content = this.previousElementSibling;
+        content.classList.toggle('show');
+        this.textContent = content.classList.contains('show') ? 'Read Less' : 'Read More';
+      });
+    });
+  
+    //DONATE NOW
+
+    // c
+    function toggleShareOptions() {
+      const shareBox = document.getElementById('shareOptions');
+      shareBox.classList.toggle('d-none');
+    }
+  
+    function copyLink(event) {
+      event.preventDefault();
+      navigator.clipboard.writeText('https://your-link.com').then(() => {
+        alert("Link copied to clipboard!");
+      });
+    }
+
+
+
+    function shareOptions() {
+      // For web, using the Web Share API (if available)
+      if (navigator.share) {
+        navigator.share({
+          title: 'Campaign Title',
+          text: 'Check out this amazing campaign and help us!',
+          url: window.location.href,
+        }).then(() => console.log('Shared successfully'))
+          .catch((error) => console.error('Error sharing:', error));
+      } else {
+        // If Web Share API is not available, provide fallback options
+        const shareLinks = [
+          'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href),
+          'https://twitter.com/intent/tweet?url=' + encodeURIComponent(window.location.href),
+          'https://api.whatsapp.com/send?text=' + encodeURIComponent(window.location.href)
+        ];
+  
+        // Open a popup with share options
+        window.open(shareLinks[0], '_blank'); // Example: Opening Facebook
+        // You can also add more logic to open additional options or create a share popup with more choices
+      }
+    }
